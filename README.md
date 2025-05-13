@@ -14,3 +14,5 @@ Software: Arduino IDE, ThingSpeak server
 
 IoT based Smart Plant Monitoring System compatible with Arduino Uno R4 WiFi and ThingSpeak server. The features contain sensors reading (soil moisture, air humidity, air temperature, water temperature), SD card data logging, real-time online data analysis integrate with ThingSpeak and auto-watering function. The system also incorporates fail-safe mechanism and faulty alarm system. This project applied advanced embedded 
 programming, electrical wiring, automation principle, and critical thinking skills. The aim is to integrating smart technologies into agricultural such as improve plant care with automation, reduce manual labour and optimise water usage.
+
+I hope you like the project. Thank You!
