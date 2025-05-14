@@ -195,7 +195,7 @@ void loop() {
   
   // --- Auto Watering Logic ---
   if (sensorOk && !triggerAlarm) {
-    if (!watering && moisturePercent < 20) {
+    if (!watering && moisturePercent < 20 && (now.hour() >= 6 && now.hour() <= 20)) {
       Serial.println("\nWatering plant...");
       digitalWrite(RELAY_PIN, HIGH);
       digitalWrite(ledGreen, HIGH);
@@ -220,7 +220,7 @@ void loop() {
 
     animationPosn++;
     if (animationPosn > 15) animationPosn = 0;
-    delay(100); //(adjust for slower/ faster animation)
+    //delay(100); //(adjust for slower/ faster animation)
   }
 
   // --- Stop Watering after 10 secs ---
