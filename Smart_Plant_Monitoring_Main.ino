@@ -105,11 +105,11 @@ void setup() {
 void loop() {
 
   // --- Call out Sub-Functions ---
-  handleBluetooth();  // Check for Bluetooth commands
-  if (millis() % 5000 < 50) sendBluetoothData(); // Bluetooth data update every 5s
-  handleLogging();    // Log data to SD card every 30 secs
-  bool sensorOk = readSensors(); // Read and check all sensors
-  handleThingSpeak(); // Online data update every 20s
+  handleBluetooth();                                 // Check for Bluetooth commands
+  if (millis() % 5000 < 50) sendBluetoothData();     // Bluetooth data update every 5s
+  handleLogging();                                   // Log data to SD card every 30 secs
+  bool sensorOk = readSensors();                     // Read and check all sensors
+  handleThingSpeak();                                // Online data update every 20s
 
   unsigned long currentTime = millis();
 
