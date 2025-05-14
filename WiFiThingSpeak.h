@@ -12,8 +12,8 @@
 #define SOIL_PIN  A0
 
 // --- Wi-Fi Credentials (replace with your own) ---
-char ssid[] = "KewinWan";       // <-- Your WiFi network name
-char pass[] = "123456789";      // <-- Your WiFi password
+char ssid[] = "YOUR_WIFI-NAME";          // <-- Your WiFi network name
+char pass[] = "YOUR_WIFI_PASSWORD";      // <-- Your WiFi password
 
 // --- ThingSpeak ---
 unsigned long channelID = 2951177;           // Replace with your ThingSpeak channel number
