@@ -5,9 +5,9 @@ Title: Smart Plant Monitoring System
 Programme: Mechanical and Manufacturing Engineering
 Institution: Munster Technological University
 
-Hardware: Arduino Uno R4 WiFi, HC-05, Micro SD Card Adapter,
-          Capacitive Soil Moisture Sensor v2.0, DHT11, DS18B20,
-          LCD1602I2C, 5V Relay, Water Pump, PiezoBuzzer, LEDs.
+Hardware: Arduino Uno R4 WiFi, HC-05, Micro SD Card Adapter, DHT11, DS18B20
+          Capacitive Soil Moisture Sensor v2.0, RTC DS321, LCD1602I2C,
+          5V Relay, Water Pump, PiezoBuzzer, LEDs.
 Software: Arduino IDE, ThingSpeak server
 ***************************************************************************/
 // This source file is the main program of the Smart Plant Monitoring System, all the sub-functions are called and run in this program.
