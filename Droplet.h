@@ -1,4 +1,4 @@
-//This source file contains the code for creating the water droplet character that is being called during watering animation.
+// This source file contains the code for creating the water droplet character that is being called during watering animation.
 
 #ifndef DROPLET_H
 #define DROPLET_H

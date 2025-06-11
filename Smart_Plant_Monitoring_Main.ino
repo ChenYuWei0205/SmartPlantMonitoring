@@ -5,8 +5,8 @@ Title: Smart Plant Monitoring System
 Programme: Mechanical and Manufacturing Engineering
 Institution: Munster Technological University
 
-Hardware: Arduino Uno R4 WiFi, HC-05, Micro SD Card Adapter, DHT11, DS18B20
-          Capacitive Soil Moisture Sensor v2.0, RTC DS321, LCD1602I2C,
+Hardware: Arduino Uno R4 WiFi, HC-05, Micro SD Card Adapter, RTC DS3231,
+          Capacitive Soil Moisture Sensor v2.0, DHT11, DS18B20, LCD1602I2C,
           5V Relay, Water Pump, PiezoBuzzer, LEDs.
 Software: Arduino IDE, ThingSpeak server
 ***************************************************************************/
@@ -37,6 +37,7 @@ RTC_DS3231 rtc;
 // --- Soil Calibration Values ---  (Adjust based on your reference)
 int dryValue = 540;
 int wetValue = 265;
+int soilValue;
 int moisturePercent;
 const int moistureThreshold = 20; // Moisture below 20%
 bool moistErrorPrinted = false;
@@ -53,7 +54,7 @@ bool watering = false;
 bool triggerAlarm = false;
 bool buzzerState = false; // true = ON, false = OFF
 unsigned long lastBeepTime = 0;
-const unsigned long beepInterval = 500;
+const unsigned long beepInterval = 250;
 
 bool airTempAlertPrinted = false;
 bool airHumAlertPrinted = false;
@@ -78,12 +79,6 @@ void setup() {
   initSensors();
   initWiFi();
   
-  // --- LCD init ---
-  lcd.init();
-  lcd.backlight();
-  lcd.setCursor(0,0); lcd.print("Smart Plant");
-  lcd.setCursor(0,1); lcd.print("System Ready!");
-
   // --- RTC init ---
   if (!rtc.begin()) {
     Serial.println("Couldn't find RTC");
@@ -95,8 +90,14 @@ void setup() {
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));  // Set from compile time
   }
 
-  Serial.println("Smart Plant Watering System Ready");
-  Serial.println("==============================");
+  // --- LCD init ---
+  lcd.init();
+  lcd.backlight();
+  lcd.setCursor(0,0); lcd.print(F("Smart Plant"));
+  lcd.setCursor(0,1); lcd.print(F("System Ready!"));
+
+  Serial.println(F("Smart Plant Watering System Ready"));
+  Serial.println(F("=============================="));
   
   delay(2000); // Pre-start message display
   lcd.clear();
@@ -105,39 +106,28 @@ void setup() {
 void loop() {
 
   // --- Call out Sub-Functions ---
-  handleBluetooth();                                 // Check for Bluetooth commands
-  if (millis() % 5000 < 50) sendBluetoothData();     // Bluetooth data update every 5s
-  handleLogging();                                   // Log data to SD card every 30 secs
-  bool sensorOk = readSensors();                     // Read and check all sensors
-  handleThingSpeak();                                // Online data update every 20s
+  handleBluetooth();  // Check for Bluetooth commands
+  if (millis() % 5000 < 50) sendBluetoothData(); // Bluetooth data update every 5s
+  handleLogging();    // Log data to SD card every 30 secs
+  bool sensorOk = readSensors(); // Read and check all sensors
+  handleThingSpeak(); // Online data update every 20s
+  readMoisture(); // Acquire soil moisture data
 
   unsigned long currentTime = millis();
 
-  // --- Read Soil Moisture ---
-  int soilValue = analogRead(SOIL_PIN);
-  moisturePercent = map(soilValue, dryValue, wetValue, 0, 100);
-  moisturePercent = constrain(moisturePercent, 0, 100);
-  if (soilValue <= 10 && soilValue >= 1020) {
-    Serial.println("Moisture sensor not detected or faulty!");
-    moistErrorPrinted = true;
-  }
-  if (soilValue > 10 && soilValue < 1020) {
-    moistErrorPrinted = false;
-  }
-  
   // --- Sensors Serial Monitor Display Update (every 2 sec) ---
   if (sensorOk && !triggerAlarm) {
     if (currentTime - lastUpdateTime >= 2000) {
       lastUpdateTime = currentTime;
       Serial.print("Moisture: ");
       Serial.print(moisturePercent); Serial.print("% | "); Serial.println(soilValue);
-  
+
       Serial.print("Air Temp: ");
       Serial.print(airTemp); Serial.println("°C");
-      
+
       Serial.print("Air Humidity: ");
       Serial.print(airHumidity); Serial.println("%");
-  
+
       Serial.print("Water Temp: ");
       Serial.print(waterTemperature); Serial.println("°C");
       Serial.println("==============================");
@@ -152,56 +142,58 @@ void loop() {
   sprintf(timeBuffer, "%02d:%02d:%02d", now.hour(), now.minute(), now.second());
 
   // --- Display Sensor Data (cycling pages) ---
-  if (!watering && (currentTime - lastPageSw >= pageDelay)) {
-    lastPageSw = currentTime;
-    currentPage = (currentPage + 1) % 3;
-    lcd.clear();
+  if (!triggerAlarm && !watering) {
+    if (currentTime - lastPageSw >= pageDelay) {
+      lastPageSw = currentTime;
+      currentPage = (currentPage + 1) % 3;
+      lcd.clear();
 
-    // --- IF NOT sensors failed THEN print the values ---
-    if (!sensorOk) {
-      lcd.setCursor(0,0); lcd.print("Sensor Error!");
-      lcd.setCursor(0,1); lcd.print("Check Sensors!");
-      
-    } else {
-      if (currentPage == 0) {
-        // --- Date & Time Display ---
-        lcd.setCursor(0,0);
-        lcd.print("Date: "); lcd.print(dateBuffer);
-        lcd.setCursor(0,1);
-        lcd.print("Time: "); lcd.print(timeBuffer);
-      }
-      if (currentPage == 1) {
-        // --- Moisture & Water Temp display ---
-        lcd.setCursor(0,0);
-        lcd.print("Moist: ");
-        lcd.print(moisturePercent); lcd.print("%");
+      // --- IF NOT sensors failed THEN print the values ---
+      if (!sensorOk) {
+        lcd.setCursor(0,0); lcd.print("Sensor Error!");
+        lcd.setCursor(0,1); lcd.print("Check Sensors!");
+        
+      } else {
+        if (currentPage == 0) {
+          // --- Date & Time Display ---
+          lcd.setCursor(0,0);
+          lcd.print("Date: "); lcd.print(dateBuffer);
+          lcd.setCursor(0,1);
+          lcd.print("Time: "); lcd.print(timeBuffer);
+        }
+        if (currentPage == 1) {
+          // --- Moisture & Water Temp display ---
+          lcd.setCursor(0,0);
+          lcd.print("Moist: ");
+          lcd.print(moisturePercent); lcd.print("%");
 
-        lcd.setCursor(0,1);
-        lcd.print("Water: ");
-        lcd.print(waterTemperature, 1); lcd.print(char(223)); lcd.print("C");
-        
-      } else if (currentPage == 2) {
-        // --- Air Temp & Air Humidity display ---
-        lcd.setCursor(0,0);
-        lcd.print("Air Temp: ");
-        lcd.print(airTemp, 1); lcd.print(char(223)); lcd.print("C");
-        
-        lcd.setCursor(0,1);
-        lcd.print("Humidity: ");
-        lcd.print(airHumidity, 1); lcd.print("%");
+          lcd.setCursor(0,1);
+          lcd.print("Water: ");
+          lcd.print(waterTemperature, 1); lcd.print(char(223)); lcd.print("C");
+          
+        } else if (currentPage == 2) {
+          // --- Air Temp & Air Humidity display ---
+          lcd.setCursor(0,0);
+          lcd.print("Air Temp: ");
+          lcd.print(airTemp, 1); lcd.print(char(223)); lcd.print("C");
+
+          lcd.setCursor(0,1);
+          lcd.print("Humidity: ");
+          lcd.print(airHumidity, 1); lcd.print("%");
+        }
       }
     }
   }
-  
+
   // --- Auto Watering Logic ---
   if (sensorOk && !triggerAlarm) {
     if (!watering && moisturePercent < 20 && (now.hour() >= 6 && now.hour() <= 20)) {
-      Serial.println("\nWatering plant...");
+      Serial.println("Watering plant...");
       digitalWrite(RELAY_PIN, HIGH);
       digitalWrite(ledGreen, HIGH);
       watering = true;
       lastWateringTime = currentTime;
-  
+
       lcd.clear();
       lcd.setCursor(3,0);
       lcd.print("Watering...");
@@ -225,7 +217,7 @@ void loop() {
 
   // --- Stop Watering after 10 secs ---
   if (watering && (currentTime - lastWateringTime >= 10000)) {
-    Serial.println("\nWatering complete!");
+    Serial.println("Watering complete!");
     digitalWrite(RELAY_PIN, LOW);
     digitalWrite(ledGreen, LOW);
     watering = false;
@@ -255,6 +247,20 @@ void loop() {
   }
 }
 
+// --- Read Soil Moisture ---
+void readMoisture() {
+  soilValue = analogRead(SOIL_PIN);
+  moisturePercent = map(soilValue, dryValue, wetValue, 0, 100);
+  moisturePercent = constrain(moisturePercent, 0, 100);
+  if (soilValue <= 10 && soilValue >= 1020) {
+    Serial.println("Moisture sensor not detected or faulty!");
+    moistErrorPrinted = true;
+  }
+  if (soilValue > 10 && soilValue < 1020) {
+    moistErrorPrinted = false;
+  }
+}
+
 void checkAlarms() {
   triggerAlarm = false;
 
@@ -263,35 +269,35 @@ void checkAlarms() {
     if (!waterTempAlertPrinted) {
       Serial.println("Water temp out of range!");
       BTSerial.println("Water temp out of range!");
+      lcd.clear();
+      lcd.setCursor(0,0); lcd.print("Water Temp");
+      lcd.setCursor(0,1); lcd.print("Out of Range!");
       waterTempAlertPrinted = true;
     }
-    lcd.clear();
-    lcd.setCursor(0,0); lcd.print("Water Temp");
-    lcd.setCursor(0,1); lcd.print("Out of Range!");
   }
-  
+
   if (airTemp > 35) {
     triggerAlarm = true;
     if (!airTempAlertPrinted) {
       Serial.println("Air temp too high!");
       BTSerial.println("Air temp too high!");
+      lcd.clear();
+      lcd.setCursor(0,0); lcd.print("Air Temp");
+      lcd.setCursor(0,1); lcd.print("too High!");
       airTempAlertPrinted = true;
     }
-    lcd.clear();
-    lcd.setCursor(0,0); lcd.print("Air Temp");
-    lcd.setCursor(0,1); lcd.print("too High!");
   }
-  
+
   if (airHumidity < 20) {
     triggerAlarm = true;
     if (!airHumAlertPrinted) {
       Serial.println("Humidity too low!");
       BTSerial.println("Humidity too low!");
+      lcd.clear();
+      lcd.setCursor(0,0); lcd.print("Air Humidity");
+      lcd.setCursor(0,1); lcd.print("too Low!");
       airHumAlertPrinted = true;
     }
-    lcd.clear();
-    lcd.setCursor(0,0); lcd.print("Air Humidity");
-    lcd.setCursor(0,1); lcd.print("too Low!");
   }
 
   // Prevent alert message from flooding the monitor

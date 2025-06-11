@@ -1,5 +1,5 @@
-//This source file contains the actual code for the air temperature, humidity, and water temperature ADC program.
-//DHT11, DS18B20 Modules
+// This source file contains the actual code for the air temperature, humidity, and water temperature ADC program.
+// DHT11, DS18B20 Modules
 
 #ifndef SENSORS_H
 #define SENSORS_H
@@ -42,7 +42,7 @@ void initSensors() {
 
 bool readSensors() {
   bool success = true; // Assume everything is fine initally
-  
+
   // --- Read Air Temperature and Humidity ---
   float temp = dht.readTemperature();
   float hum = dht.readHumidity();
@@ -71,7 +71,7 @@ bool readSensors() {
 
   // --- Read Water Temperature (Non-Blocking) --- (REMOVE COMMENT FOR ALTERNATIVE)
   unsigned long currentTime = millis();
-  
+
   // --- Get Temp reading whenever function is called ---
   /*if (!waterTempRequested) {
     lastTempReqTime = currentTime;
@@ -89,13 +89,13 @@ bool readSensors() {
     }
     waterTempRequested = false; // Ready for next cycle
   }*/
-  
+
     // --- Call Temp reading every 100ms ---
     if (currentTime - lastTempReqTime >= 100) {
     lastTempReqTime = currentTime;
     waterSensor.requestTemperatures();
     float waterTemp = waterSensor.getTempCByIndex(0);
-  
+
     if ((waterTemp != DEVICE_DISCONNECTED_C)) {
       waterTemperature = waterTemp;
       dsbErrorPrinted = false;

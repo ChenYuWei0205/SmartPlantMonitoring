@@ -1,4 +1,4 @@
-//This source file contains the actual code for the Bluetooth module program.
+// This source file contains the actual code for the Bluetooth module program.
 // HC-05 Bluetooth Module
 
 #ifndef BLUETOOTH_H
@@ -11,13 +11,11 @@
 SoftwareSerial BTSerial(2, 3); // RX, TX
 
 // --- Define Pins ---
-#define SOIL_PIN  A0
 #define RELAY_PIN 6
 #define ledGreen  9
 
 // --- External Variables ---
-extern int dryValue;
-extern int wetValue;
+extern int moisturePercent;
 extern float airTemp;
 extern float airHumidity;
 extern float waterTemperature;
@@ -32,9 +30,6 @@ void initBluetooth() {
 
 void sendBluetoothData() {
   DateTime now = rtc.now();
-  int soilValue = analogRead(SOIL_PIN);
-  int moisturePercent = map(soilValue, dryValue, wetValue, 0, 100);
-  moisturePercent = constrain(moisturePercent, 0, 100);
 
   BTSerial.println("=== Plant Status ===");
   BTSerial.print("Date: ");
@@ -53,12 +48,6 @@ void sendBluetoothData() {
 
   BTSerial.print(" | Water Temp: ");
   BTSerial.print(waterTemperature, 1); BTSerial.println("°C");
-
-  if (triggerAlarm) {
-    BTSerial.println("⚠ ALERT: One or more conditions out of range!");
-  } else {
-    BTSerial.println("✅ All conditions normal.");
-  }
 
   BTSerial.println("====================");
 }

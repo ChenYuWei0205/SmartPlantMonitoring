@@ -1,6 +1,6 @@
-//This source file contains the actual code for the online data logging program integrate with ThingSpeak server.
-//Arduino Uno R4 WiFi, ThingSpeak Server
-//Take note that ThingSpeak free access only allow data upload every 15 secs (faster uploading requires a premium account)
+// This source file contains the actual code for the online data logging program integrate with ThingSpeak server.
+// Arduino Uno R4 WiFi, ThingSpeak Server
+// Take note that ThingSpeak free access only allow data upload every 15 secs (faster uploading requires a premium account)
 
 #ifndef WIFITHINGSPEAK_H
 #define WIFITHINGSPEAK_H
@@ -9,15 +9,13 @@
 #include <ThingSpeak.h>
 #include <Arduino.h>
 
-#define SOIL_PIN  A0
-
 // --- Wi-Fi Credentials (replace with your own) ---
-char ssid[] = "YOUR_WIFI-NAME";          // <-- Your WiFi network name
-char pass[] = "YOUR_WIFI_PASSWORD";      // <-- Your WiFi password
+char ssid[] = "Almondddd";             // <-- Your WiFi network name
+char pass[] = "WelcomeHello";         // <-- Your WiFi password
 
 // --- ThingSpeak ---
-unsigned long channelID = 2951177;           // Replace with your ThingSpeak channel number
-const char *apiKey = "4PAP3WBKXUBY0P9I";     // Replace with your ThingSpeak Write API Key
+unsigned long channelID = 2951105;           // Replace with your ThingSpeak channel number
+const char *apiKey = "DFE3FGGUPOUK8Y8T";     // Replace with your ThingSpeak Write API Key
 
 WiFiClient client;
 
@@ -25,8 +23,7 @@ WiFiClient client;
 extern float airTemp;
 extern float airHumidity;
 extern float waterTemperature;
-extern int dryValue;
-extern int wetValue;
+extern int moisturePercent;
 
 unsigned long lastUpdate = 0;
 const unsigned long updateInterval = 20000;  // 20 seconds
@@ -49,10 +46,6 @@ void initWiFi() {
 }
 
 void uploadToThingSpeak() {
-  // --- Read Soil Moisture ---
-  int soilValue = analogRead(SOIL_PIN);
-  int moisturePercent = map(soilValue, dryValue, wetValue, 0, 100);
-  moisturePercent = constrain(moisturePercent, 0, 100);
 
   // --- Write Fields ---
   ThingSpeak.setField(1, moisturePercent);
