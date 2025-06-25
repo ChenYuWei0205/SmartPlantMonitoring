@@ -20,3 +20,11 @@ programming, electrical wiring, automation principle, and critical thinking skil
 • A 470uF capacitor should be connected acrros the 5V and GND electricity path for decoupling purpose to ensure current stability.
 
 I hope you like the project. Thank You!
+
+• (ThingSpeak Server) - Real-time data logging and data analysis online.
+![image](https://github.com/user-attachments/assets/17edde29-d0ed-4d55-a598-67c1ee5e4518)
+
+• (SD Data Logging) - Data backup purpose, transfer the file into Excel for further data analysis. The data logged file is saved as the current date (YYYYMMDD).
+![image](https://github.com/user-attachments/assets/57f28846-1dd3-4cbb-a0e4-433fe615b275)
+
+
