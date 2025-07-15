@@ -23,7 +23,7 @@ programming, electrical wiring, automation principle, and critical thinking skil
 
 • A 470uF capacitor should be connected acrros the 5V and GND electricity path for decoupling purpose to ensure current stability.
 
-I hope you like the project. Thank You!
+I hope you like the project. Thank You! :D
 
 ==========================================================================================
 
@@ -38,9 +38,9 @@ I hope you like the project. Thank You!
 
 **SD Data Logging**
 
-• Data backup purpose, transfer the file into Excel for further data analysis.
+• Data logging is for data backup purpose. You can transfer the file into Excel for advance data analysis.
 
-• The data logged file is saved as the current date format (YYYYMMDD).
+• The data is logged with timestamp and the file name is saved as the current date format (YYYYMMDD).
 
 ![image](https://github.com/user-attachments/assets/57f28846-1dd3-4cbb-a0e4-433fe615b275)
 
