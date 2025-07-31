@@ -12,7 +12,7 @@ Hardware: Arduino Uno R4 WiFi, HC-05 Bluetooth module, Micro SD Card Adapter, Ca
 
 Software: Arduino IDE, ThingSpeak server
 
-==========================================================================================
+=====================================================================================
 
 **Description:**
 
