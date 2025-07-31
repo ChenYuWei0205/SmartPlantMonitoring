@@ -49,4 +49,4 @@ I hope you like the project. Thank You! :D
 
 ![WhatsApp Image 2025-07-31 at 08 02 53_f4fd6bfe](https://github.com/user-attachments/assets/5d72f93a-5ebd-4023-8c7c-403a9e0c6e06)
 
-![WhatsApp Image 2025-07-31 at 08 02 53_2f3545df](https://github.com/user-attachments/assets/81032048-eb70-4640-a436-e4f2fa8d005d)
+![WhatsApp Image 2025-07-31 at 08 11 45_506d1e71](https://github.com/user-attachments/assets/7bab9b8e-4132-4cab-a15c-3dd77c981872)
