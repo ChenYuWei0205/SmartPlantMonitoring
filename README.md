@@ -45,3 +45,8 @@ I hope you like the project. Thank You! :D
 ![image](https://github.com/user-attachments/assets/57f28846-1dd3-4cbb-a0e4-433fe615b275)
 
 
+**Smart Plant Monitor Interface**
+
+![WhatsApp Image 2025-07-31 at 08 02 53_f4fd6bfe](https://github.com/user-attachments/assets/5d72f93a-5ebd-4023-8c7c-403a9e0c6e06)
+
+![WhatsApp Image 2025-07-31 at 08 02 53_f4fd6bfe](https://github.com/user-attachments/assets/3f823678-ea3e-4910-882a-dde4a1a52943)
