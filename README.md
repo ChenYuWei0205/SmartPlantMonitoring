@@ -10,9 +10,9 @@ Institution: Munster Technological University
 
 Hardware: Arduino Uno R4 WiFi, HC-05 Bluetooth module, Micro SD Card Adapter, Capacitive Soil Moisture Sensor v2.0, DHT11 sensor, DS18B20 temperature probe, LCD1602I2C, 5V Relay, Water Pump, Passive PiezoBuzzer, LEDs.
 
-Software: Arduino IDE, ThingSpeak server
+Software: Arduino IDE, ThingSpeak server, MIT App Inventor
 
-=====================================================================================
+==========================================================================================
 
 **Description:**
 
