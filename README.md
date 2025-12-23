@@ -1,4 +1,4 @@
-Author: Kewin Wan, Chen Yu Wei
+Author: Chen Yu Wei, Kewin Wan
 
 Subject: Team Project
 
